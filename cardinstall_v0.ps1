@@ -2,7 +2,7 @@ $base_url = "http://file.aks.support/"
 
 $path = "C:\Distr\"
 $file = "Setup.iikoCard5.POS.exe"
-$verfile = "version"
+$verfile = "version_pos"
 
 $path_exist = Test-Path $path
 $file_path = -join($path + $file)
