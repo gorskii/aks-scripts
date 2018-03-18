@@ -14,7 +14,7 @@ if(-not $path_exist) {
     New-Item -Path $path -ItemType "directory"
 }
 
-$current_ver = Get-Package "iikoCard5 POS" | Select -ExpandProperty "Version" 
+$current_ver = Get-Package "iikoCard5 POS" | Select-Object -ExpandProperty "Version" 
 if ($current_ver) {
     Write-Host ("Текущая версия iikoCard5 Pos {0}" -f $current_ver)
 }
