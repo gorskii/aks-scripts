@@ -1,16 +1,20 @@
 $base_url = "http://file.aks.support/"
 
+$aks_path = "$env:APPDATA\AKS\"
 $path = "C:\Distr\"
 $file = "Setup.iikoCard5.POS.exe"
 $verfile = "version"
 
 $file_path = -join($path + $file)
+$aks_file_path = -join($aks_path + $file)
 
-# Проверка наличия каталога и текущей версии
-$path_exist = Test-Path $path
-if(-not $path_exist) {
-    New-Item -Path $path -ItemType "directory"
+# Устанавливаем рабочий каталог
+$aks_path_exist = Test-Path $aks_path
+if (-not $aks_path_exist) {
+    New-Item -Path $aks_path -ItemType "directory" | Out-Null
 }
+# TODO # не работает, срабатывает в конце скрипта. Временно используются абсолютные пути.
+# Set-Location -Path $aks_path
 
 # Инициализация веб-клиента
 $WebClient = New-Object System.Net.WebClient
@@ -24,14 +28,15 @@ Try {
 Catch {
 	Write-Warning "$($error[0])"
     Write-Warning "Не удаётся получить информацию о версии с сервера. Проверьте подключение."
+    Start-Sleep -Seconds 5
     exit
 }
-# TODO # Красиво обработать исключение
 
 # Получаем текущую версию программы
-Try {
-    $current_ver =  Get-Package "iikoCard5 POS" | Select-Object -ExpandProperty "Version" 
-    
+# TODO # Запрос выполняется очень долго, Get-WmiObject используется для совместимости с Windows 7
+$current_ver = Get-WmiObject -Query "SELECT * FROM Win32_Product WHERE Name Like 'iikoCard5 POS%'" | Select-Object -ExpandProperty "Version" 
+
+if ($current_ver) {
     Write-Host ("Текущая версия iikoCard5 POS: {0}" -f $current_ver)
 
     $current_ver_int = [int]($current_ver -replace '[\.]+', '')
@@ -39,17 +44,15 @@ Try {
 
     if ($remote_ver_int -le $current_ver_int) {
         Write-Host "Текущая версия актуальна"
+        Start-Sleep -Seconds 5
         exit
     }
+} else {
+    Write-Host "iikoCard5 POS не установлен"
 }
-Catch {
-    Write-Warning "iikoCard5 POS не установлен"
-}
-
-
-Write-Host ("Загрузка iikoCard5 POS")
 
 # Загружаем дистрбутив с сервера
+Write-Host ("Загрузка iikoCard5 POS...")
 
 # Удаляем события отслеживания состояния загрузки
 Get-EventSubscriber | Unregister-Event
@@ -66,12 +69,14 @@ Register-ObjectEvent -InputObject $WebClient -EventName DownloadProgressChanged 
 } | Out-Null
 
 # Загрузка файла
-# TODO Загрузка дистрибутива во временный файл, при успешной загрузке замена имеющегося в $file_path дистрибутива
 Try {
-	$WebClient.DownloadFileAsync($file, $file_path)
-} 
+	$WebClient.DownloadFileAsync($file, $aks_file_path)
+}
 Catch {
-	Write-Warning "$($error[0])"
+    Write-Warning "$($error[0])"
+    Write-Warning "Не удаётся загрузить дистрибутив. Проверьте подключение."
+    Start-Sleep -Seconds 5
+    exit
 }
 
 # Отрисовываем прогрессбар для загружаемого файла
@@ -85,18 +90,25 @@ While (-not $isDownloaded){
     }
 }
 
-# Если дистрибутив успешно загружен, запускаем установку в пассивном режиме
+# Если дистрибутив успешно загружен, помещаем его в каталог $path и запускаем установку в пассивном режиме
 If ($isDownloaded) {
+    # Проверка наличия каталога и текущей версии
+    $path_exist = Test-Path $path
+    if(-not $path_exist) {
+        New-Item -Path $path -ItemType "directory" | Out-Null
+    }
+    Move-Item -Path $aks_file_path -Destination $file_path -Force
     $version_card = (Get-Item $file_path).VersionInfo.FileVersion
     Write-Host ("Загрузка iikoCard5 POS завершена, загруженная версия: {0}" -f $version_card)
     Write-Host "Запускается установка..."
     Start-Process $file_path -ArgumentList "/passive"
+    Start-Sleep -Seconds 5
 }
 
 # Удаляем созданные события
 Get-EventSubscriber | Unregister-Event
 
 # TODO #
-# Батник, который скачивает скрипт и запускает. Установить политику выполнения.
 # Закачка должна успешно перезапускаться, если скрипт был аварийно завершён.
-# Запуск службы iikoCard
+# Должен быть таймаут соединения, если пропал интернет во время загрузки файла.
+# Прогрессбар не отображается на Windows 7 и при вызове скрипта из install_card.cmd
