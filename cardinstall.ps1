@@ -1,4 +1,4 @@
-$base_url = "http://file.aks.support/"
+$base_url = "http://files.aks.group/"
 
 $aks_path = "$env:APPDATA\AKS\"
 $path = "C:\Distr\"
