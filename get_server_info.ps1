@@ -21,10 +21,13 @@ else {
 }
 
 foreach ($hostName in $hosts) {
+    # Remove port from hostName to use HTTPS protocol with current server lists
+    $hostName = $hostName -replace ":8080" -replace ":9080"
+
     Write-Progress -Activity "Checking hosts..." -Status "Progress:" -PercentComplete ($count/$hosts.Length*100) -CurrentOperation $hostName
 
     try {
-        $request = Invoke-WebRequest -Uri http://$hostName/resto/get_server_info.jsp -Method Get -ErrorAction Continue
+        $request = Invoke-WebRequest -Uri https://$hostName/resto/get_server_info.jsp -Method Get -ErrorAction Continue
         $content = $request.Content
 
         $serverName = Select-XML -Content $content -XPath "r/serverName"
