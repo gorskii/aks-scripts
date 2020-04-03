@@ -22,7 +22,7 @@ Function SetHTTPS([String]$path){
         $configFile = Get-Content -ErrorAction Stop -Path $path
         if (($configFile | Select-String "iiko.it:8080/resto") -or (($configFile | Select-String "iiko.it") -and (($configFile | Select-String "<Port>8080</Port>") -or ($configFile | Select-String "<Port>9080</Port>"))))
         {
-            $configFile = $configFile -replace "http://", "https://"
+            $configFile = $configFile -replace "<serverUrl>http://", "<serverUrl>https://"
             $configFile = $configFile -replace "<Protocol>http</Protocol>", "<Protocol>https</Protocol>"
             $configFile = $configFile -replace "<Port>8080</Port>", "<Port>443</Port>"
             $configFile = $configFile -replace "<Port>9080</Port>", "<Port>443</Port>"
