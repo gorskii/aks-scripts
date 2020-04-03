@@ -26,6 +26,12 @@ foreach ($hostName in $hosts) {
 
     Write-Progress -Activity "Checking hosts..." -Status "Progress:" -PercentComplete ($count/$hosts.Length*100) -CurrentOperation $hostName
 
+    # Skip commented strings
+    if ($hostName[0] -eq '#') {
+        $count += 1
+        continue
+    }
+
     try {
         $request = Invoke-WebRequest -Uri https://$hostName/resto/get_server_info.jsp -Method Get -ErrorAction Continue
         $content = $request.Content
