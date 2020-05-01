@@ -21,7 +21,7 @@ else {
 }
 
 foreach ($hostName in $hosts) {
-    # Remove port from hostName to use HTTPS protocol with current server lists
+    # Remove port from hostName to use HTTPS protocol in legacy server lists
     $hostName = $hostName -replace ":8080" -replace ":9080"
 
     Write-Progress -Activity "Checking hosts..." -Status "Progress:" -PercentComplete ($count/$hosts.Length*100) -CurrentOperation $hostName
