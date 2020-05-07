@@ -13,8 +13,10 @@ It shows 'N/A' if host is unreachable.
 Accepts list of hostnames as `-inputFile` or a single hostname as a first argument.
 Writes results to console output and to CSV file, if `-outputFile` argument is specified.
 
+*NOTE: Temporarily works with HTTPS protocol only*
+
 ### Usage
 
-    ./get_server_info.ps1 server.iiko.it:8080
+    ./get_server_info.ps1 server.iiko.it
 
     ./get_server_info.ps1 -inputFile servers.txt -outputFile result.csv
