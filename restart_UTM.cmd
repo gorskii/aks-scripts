@@ -3,7 +3,7 @@
 REM Check admin privilegies
 NET SESSION >NUL 
 if %errorlevel% NEQ 0 (
-    echo í‡•°„Ó‚·Ô Ø‡†¢† †§¨®≠®·‚‡†‚Æ‡†.
+    echo –¢—Ä–µ–±—É—é—Ç—Å—è –ø—Ä–∞–≤–∞ –∞–¥–º–∏–Ω–∏—Å—Ç—Ä–∞—Ç–æ—Ä–∞.
     pause
     exit
 )
@@ -12,34 +12,38 @@ set main_fail = 0
 set mon_fail = 0
 set upd_fail = 0
 
-echo ë‚†‚„· ·´„¶° UTM:
-for /F "tokens=3 delims=: " %%H in ('sc query "Transport" ^| findstr "        ëÆ·‚ÆÔ≠®•"') do (
-  if /I "%%H" NEQ "RUNNING" (
-      echo     ë´„¶°† Transport ≠• ß†Ø„È•≠†.
-      set main_fail = 1
-  ) else (
-      echo     ë´„¶°† Transport ß†Ø„È•≠†.
-  ) 
-for /F "tokens=3 delims=: " %%H in ('sc query "Transport-Monitoring" ^| findstr "        ëÆ·‚ÆÔ≠®•"') do (
-  if /I "%%H" NEQ "RUNNING" (
-      echo     ë´„¶°† Transport-Monitoring ≠• ß†Ø„È•≠†.
-      set mon_fail = 1
-  ) else (
-      echo     ë´„¶°† Transport-Monitoring ß†Ø„È•≠†.
-  )
-for /F "tokens=3 delims=: " %%H in ('sc query "Transport-Updater" ^| findstr "        ëÆ·‚ÆÔ≠®•"') do (
-  if /I "%%H" NEQ "RUNNING" (
-      echo     ë´„¶°† Transport-Updater ≠• ß†Ø„È•≠†.
-      set upd_fail = 1
-  ) else (
-      echo     ë´„¶°† Transport-Updater ß†Ø„È•≠†.
-  )
+echo –°—Ç–∞—Ç—É—Å —Å–ª—É–∂–± UTM:
+for /F "tokens=3 delims=: " %%H in ('sc query "Transport" ^| findstr "        –°–æ—Å—Ç–æ—è–Ω–∏–µ"') do (
+    if /I "%%H" NEQ "RUNNING" (
+        echo     –°–ª—É–∂–±–∞ Transport –Ω–µ –∑–∞–ø—É—â–µ–Ω–∞.
+        set main_fail = 1
+    ) else (
+        echo     –°–ª—É–∂–±–∞ Transport –∑–∞–ø—É—â–µ–Ω–∞.
+    )
+)
+for /F "tokens=3 delims=: " %%H in ('sc query "Transport-Monitoring" ^| findstr "        –°–æ—Å—Ç–æ—è–Ω–∏–µ"') do (
+    if /I "%%H" NEQ "RUNNING" (
+        echo     –°–ª—É–∂–±–∞ Transport-Monitoring –Ω–µ –∑–∞–ø—É—â–µ–Ω–∞.
+        set mon_fail = 1
+    ) else (
+        echo     –°–ª—É–∂–±–∞ Transport-Monitoring –∑–∞–ø—É—â–µ–Ω–∞.
+    )
+)
+
+for /F "tokens=3 delims=: " %%H in ('sc query "Transport-Updater" ^| findstr "        –°–æ—Å—Ç–æ—è–Ω–∏–µ"') do (
+    if /I "%%H" NEQ "RUNNING" (
+        echo     –°–ª—É–∂–±–∞ Transport-Updater –Ω–µ –∑–∞–ø—É—â–µ–Ω–∞.
+        set upd_fail = 1
+    ) else (
+        echo     –°–ª—É–∂–±–∞ Transport-Updater –∑–∞–ø—É—â–µ–Ω–∞.
+    )
+)
 
 if  %main_fail% NEQ 1 (
     net stop "Transport"
 )
 if %mon_fail% NEQ 1 (
-    net stop "Transport-Monitoring"   
+    net stop "Transport-Monitoring"
 )
 if %upd_fail% NEQ 1 (
     net stop "Transport-Updater"
