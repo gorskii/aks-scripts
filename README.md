@@ -36,6 +36,6 @@ It also searches for all available BackOffice config files in `%AppData%\iiko` f
 
     ./set_HTTPS.ps1
 
-You can also use `set_HTTPS.bat` script to download and run the above powershell script with `-executionpolicy RemoteSigned` option set, no admin previlegies required:
+You can also use `set_HTTPS.bat` script to download and run the above powershell script with `-executionpolicy RemoteSigned` option set, no admin privileges required:
 
     ./set_HTTPS.bat
